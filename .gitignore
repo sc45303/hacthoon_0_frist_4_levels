@@ -4,6 +4,11 @@ venv/
 __pycache__/
 *.pyc
 
+# Gmail API credentials (Silver Tier)
+credentials/
+*.pickle
+gmail_token.pickle
+
 # Obsidian
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json

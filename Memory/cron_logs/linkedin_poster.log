@@ -1,0 +1,12 @@
+============================================================
+🚀 LinkedIn Auto-Poster
+============================================================
+❌ Token file not found: credentials/linkedin_token.json
+   Run: python authenticate_linkedin.py
+============================================================
+🚀 LinkedIn Auto-Poster
+============================================================
+✅ Token loaded for: Suhail Khan
+
+📭 No posts found in Posts_Queue/
+   Create a .md file in Posts_Queue/ to post
