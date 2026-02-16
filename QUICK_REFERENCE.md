@@ -1,54 +1,51 @@
-# 🚀 Personal AI Employee - Quick Reference
+# 🤖 Personal AI Employee - Quick Reference
 
-## What's Working Now
+**Your AI Employee at a Glance**
 
-✅ **Gmail Watcher** - Running in background
-   - Detected 13 emails
-   - Creating task files automatically
-   - Runs every 2 minutes via cron  
+---
 
-✅ **Email MCP Server** - Ready to use
-   - Restart Claude Code
-   - Say: "Send an email to sc3078745@gmail.com"
+## 📊 Current Status
 
-✅ **Cron Automation** - Installed
-   - View jobs: `crontab -l`
-   - View logs: `tail -f Memory/cron_logs/gmail_watcher.log`
+All 4 tiers complete and running:
+- 🥉 **Bronze**: AI planning with Gemini
+- 🥈 **Silver**: Autonomous execution
+- 🥇 **Gold**: Gmail monitoring (every 2 minutes)
+- 💎 **Platinum**: LinkedIn auto-posting (hourly)
 
-## Quick Commands
+---
 
+## 🚀 Quick Commands
+
+### Check System Status
 ```bash
-# Check Gmail Watcher
-ps aux | grep gmail_watcher
-
-# View detected emails
-ls -lh Needs_Action/
-
-# View cron jobs
-crontab -l
-
-# Monitor logs
-tail -f Memory/cron_logs/gmail_watcher.log
+bash status.sh
 ```
 
-## Documentation
+### Manual Operations
+```bash
+# Run Gmail watcher manually
+python watchers/gmail_watcher.py
 
-- `FINAL_STATUS_REPORT.md` - Complete status
-- `FINAL_HANDOFF.md` - Full implementation guide
-- `QUICKSTART.md` - Fast setup guide
-- `LINKEDIN_QUICKSTART.md` - LinkedIn setup (optional)
+# Run LinkedIn poster manually
+python watchers/linkedin_poster.py
 
-## Hackathon Submission
+# Create plans for tasks
+source venv/bin/activate
+python -m agent.bronze_planner
 
-✅ Silver Tier: 100% requirements met
-✅ Working: 60% (3/5 components)
-✅ Code Complete: 100% (5/5 components)
-✅ Ready to submit
+# Execute approved tasks
+python -m agent.silver_executor
+```
 
-## Next Steps
+### Post to LinkedIn
+```bash
+# Quick post
+./quick_post.sh "Your message here #hashtags"
 
-1. Test Email MCP (restart Claude Code)
-2. Complete LinkedIn auth (optional)
-3. Prepare submission materials
-
-**Your AI Employee is operational!** 🎉
+# Or create in queue
+cat > Posts_Queue/my_post.md << 'EOF'
+---
+type: text
+visibility: PUBLIC
+---
+Your post content here
