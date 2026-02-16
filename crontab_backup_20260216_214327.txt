@@ -1,0 +1,18 @@
+# Personal AI Employee - Automated Tasks
+# Generated on Thu Feb 12 22:28:21 PKT 2026
+
+# Gmail Watcher - Check every 2 minutes
+*/2 * * * * /home/sk/projects/hacahthoon-0/personal-ai-employee/AI_Employee_Vault/cron_gmail_watcher.sh
+
+# LinkedIn Poster - Run every hour
+0 * * * * /home/sk/projects/hacahthoon-0/personal-ai-employee/AI_Employee_Vault/cron_linkedin_poster.sh
+
+# Daily cleanup - Remove old logs (keep last 7 days)
+0 0 * * * find /home/sk/projects/hacahthoon-0/personal-ai-employee/AI_Employee_Vault/Memory/cron_logs -name "*.log" -mtime +7 -delete
+
+
+# Bronze Planner - Run every 5 minutes
+*/5 * * * * /home/sk/projects/hacahthoon-0/personal-ai-employee/AI_Employee_Vault/cron_bronze_planner.sh
+
+# Silver Executor - Run every 5 minutes
+*/5 * * * * /home/sk/projects/hacahthoon-0/personal-ai-employee/AI_Employee_Vault/cron_silver_executor.sh
