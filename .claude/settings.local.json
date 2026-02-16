@@ -51,7 +51,9 @@
       "Bash(/home/sk/projects/hacahthoon-0/personal-ai-employee/AI_Employee_Vault/pre_demo_checklist.sh:*)",
       "Bash(./pre_demo_checklist.sh)",
       "Bash(./TAKE_SCREENSHOTS.sh)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(pkill -f gmail_watcher.py)",
+      "Bash(./cron_gmail_watcher.sh:*)"
     ]
   }
 }
