@@ -117,12 +117,12 @@ class GmailWatcher:
         return True
 
     def check_inbox(self):
-        """Check Gmail inbox for new important emails"""
+        """Check Gmail inbox for new unread emails"""
         try:
-            # Query for unread important emails
+            # Query for unread emails (testing mode - detects all unread)
             results = self.service.users().messages().list(
                 userId='me',
-                q='is:unread is:important',
+                q='is:unread',
                 maxResults=10
             ).execute()
 
@@ -223,7 +223,7 @@ This task was automatically created by Gmail Watcher.
         print("=" * 60)
         print(f"Vault: {self.vault_path}")
         print(f"Check interval: {self.check_interval} seconds")
-        print(f"Monitoring: Unread + Important emails")
+        print(f"Monitoring: All unread emails (testing mode)")
         print("=" * 60)
 
         # Authenticate

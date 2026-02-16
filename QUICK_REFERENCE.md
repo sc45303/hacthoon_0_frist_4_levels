@@ -5,7 +5,7 @@
 ✅ **Gmail Watcher** - Running in background
    - Detected 13 emails
    - Creating task files automatically
-   - Runs every 2 minutes via cron
+   - Runs every 2 minutes via cron  
 
 ✅ **Email MCP Server** - Ready to use
    - Restart Claude Code
