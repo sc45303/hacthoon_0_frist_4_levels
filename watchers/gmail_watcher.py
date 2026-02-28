@@ -147,6 +147,35 @@ class GmailWatcher:
             print(f"❌ Error checking inbox: {e}")
             return 0
 
+    def _get_email_body(self, payload):
+        """Extract full email body from payload"""
+        body = ""
+
+        if 'parts' in payload:
+            # Multipart email
+            for part in payload['parts']:
+                if part['mimeType'] == 'text/plain':
+                    if 'data' in part['body']:
+                        import base64
+                        body = base64.urlsafe_b64decode(part['body']['data']).decode('utf-8')
+                        break
+                elif part['mimeType'] == 'text/html' and not body:
+                    if 'data' in part['body']:
+                        import base64
+                        body = base64.urlsafe_b64decode(part['body']['data']).decode('utf-8')
+                elif 'parts' in part:
+                    # Nested parts
+                    body = self._get_email_body(part)
+                    if body:
+                        break
+        else:
+            # Simple email
+            if 'data' in payload['body']:
+                import base64
+                body = base64.urlsafe_b64decode(payload['body']['data']).decode('utf-8')
+
+        return body
+
     def process_email(self, msg_id: str):
         """Convert email to task file"""
         try:
@@ -165,8 +194,17 @@ class GmailWatcher:
             subject = headers.get('Subject', 'No Subject')
             date = headers.get('Date', 'Unknown')
 
-            # Get email body (simplified - gets snippet)
-            snippet = msg.get('snippet', '')
+            # Get FULL email body (not just snippet)
+            full_body = self._get_email_body(msg['payload'])
+
+            # Fallback to snippet if body extraction fails
+            if not full_body or len(full_body.strip()) == 0:
+                full_body = msg.get('snippet', '')
+
+            # Clean up body (remove excessive whitespace, limit length for readability)
+            full_body = full_body.strip()
+            if len(full_body) > 5000:
+                full_body = full_body[:5000] + "\n\n[Email truncated - full content available in Gmail]"
 
             # Determine priority based on keywords
             priority = 'high'
@@ -174,7 +212,7 @@ class GmailWatcher:
             if any(keyword in subject.lower() for keyword in urgent_keywords):
                 priority = 'urgent'
 
-            # Create task file
+            # Create task file with FULL email body
             task_content = f"""---
 type: email
 from: {from_email}
@@ -191,8 +229,9 @@ detected: {datetime.now().isoformat()}
 **Date:** {date}
 **Priority:** {priority}
 
-## Email Content
-{snippet}
+## Email Content (Full)
+
+{full_body}
 
 ## Suggested Actions
 - [ ] Read full email

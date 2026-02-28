@@ -65,17 +65,18 @@ A fully autonomous AI Employee that:
                  │
                  ▼
 ┌─────────────────────────────────────────────────────────┐
-│              CLAUDE CODE ORCHESTRATOR                   │
-│         (Reasoning Engine - Every 5 min)                │
-│  Reads tasks → Decides actions → Invokes skills         │
+│                   CLAUDE CODE                           │
+│              (Reasoning Engine)                         │
+│  Reads vault → Applies intelligence → Invokes skills    │
 └────────────────┬────────────────────────────────────────┘
                  │
                  ▼
 ┌─────────────────────────────────────────────────────────┐
 │                   AGENT SKILLS                          │
-│  plan_task  │  execute_task  │  check_approvals        │
-│  linkedin_post  │  update_dashboard                     │
-│         (Use Gemini API internally)                     │
+│         (.claude/skills/ - Reusable Intelligence)       │
+│  /plan-task  │  /execute-task  │  /check-approvals     │
+│  /linkedin-post  │  /update-dashboard                   │
+│         (Optional Gemini helpers in scripts/)           │
 └────────────────┬────────────────────────────────────────┘
                  │
                  ▼
@@ -87,18 +88,20 @@ A fully autonomous AI Employee that:
 
 ### Key Components
 
-**1. Claude Code Orchestrator** (`orchestrator_claude.py`)
-- Acts as the reasoning engine
+**1. Claude Code** (Reasoning Engine)
 - Reads tasks from Obsidian vault
-- Decides which Agent Skills to invoke
+- Applies intelligence and reasoning
+- Invokes Agent Skills as needed
 - Coordinates the complete workflow
 
-**2. Agent Skills** (`skills/*/`)
-- `plan_task` - Analyzes tasks and creates execution plans
-- `execute_task` - Executes approved tasks
-- `check_approvals` - Checks approval status
-- `linkedin_post` - Posts to LinkedIn
-- `update_dashboard` - Updates Dashboard.md
+**2. Agent Skills** (`.claude/skills/*/SKILL.md`)
+- `/plan-task` - Analyzes tasks and creates execution plans
+- `/execute-task` - Executes approved tasks
+- `/check-approvals` - Checks approval status
+- `/linkedin-post` - Posts to LinkedIn
+- `/update-dashboard` - Updates Dashboard.md
+- **Format:** SKILL.md files that teach Claude HOW to think
+- **Not Python scripts:** Reusable intelligence modules
 
 **3. Obsidian Vault**
 - `Dashboard.md` - Real-time system status
@@ -205,43 +208,111 @@ cat Approvals/EMAIL_xyz.md.approval.md
 
 ### What Are Agent Skills?
 
-Agent Skills are modular, reusable capabilities that Claude Code can invoke. Each skill:
-- Has a `SKILL.md` definition file
-- Has a Python implementation script
-- Can be invoked independently
-- Uses Gemini API internally (allowed by hackathon)
+Agent Skills are **reusable intelligence modules** that teach Claude Code HOW to think and work. Each skill:
+- Has a `SKILL.md` file with instructions (NOT just a Python script)
+- Located in `.claude/skills/` folder
+- Contains YAML frontmatter + markdown instructions
+- Can optionally include helper scripts in `scripts/` subdirectory
+- Teaches Claude to apply intelligence, not just execute commands
+
+**Key Difference from Python Scripts:**
+- Python scripts = Fixed logic, just executes
+- Agent Skills = Intelligence modules, Claude reasons and adapts
 
 ### Available Skills
 
-#### plan_task
-```bash
-python skills/plan_task/plan_task.py Needs_Action/EMAIL_xyz.md
-```
-Creates execution plan and approval request.
+#### /plan-task
+**Location:** `.claude/skills/plan-task/SKILL.md`
 
-#### execute_task
+**Usage:**
 ```bash
-python skills/execute_task/execute_task.py Needs_Action/EMAIL_xyz.md
+/plan-task Needs_Action/EMAIL_xyz.md
 ```
-Executes approved task according to plan.
 
-#### check_approvals
-```bash
-python skills/check_approvals/check_approvals.py
-```
-Lists approved, pending, and rejected tasks.
+**What it does:**
+- Reads and analyzes task
+- Consults Company_Handbook.md for rules
+- Creates structured execution plan
+- Determines if approval needed
+- Saves plan to Plans/
+- Creates approval request in Approvals/
 
-#### update_dashboard
-```bash
-python skills/update_dashboard/update_dashboard.py
-```
-Updates Dashboard.md with current metrics.
+**Intelligence:** Claude applies reasoning to assess complexity, risks, and requirements.
 
-#### linkedin_post
+---
+
+#### /execute-task
+**Location:** `.claude/skills/execute-task/SKILL.md`
+
+**Usage:**
 ```bash
-python skills/linkedin_post/linkedin_post.py Posts_Queue/my_post.md
+/execute-task Needs_Action/EMAIL_xyz.md
 ```
-Posts content to LinkedIn with validation.
+
+**What it does:**
+- Verifies approval status
+- Reads task and plan
+- Executes step-by-step according to plan
+- Documents all actions
+- Creates execution log
+- Moves task to Done/
+
+**Intelligence:** Claude follows plan while adapting to context and handling errors.
+
+---
+
+#### /check-approvals
+**Location:** `.claude/skills/check-approvals/SKILL.md`
+
+**Usage:**
+```bash
+/check-approvals
+```
+
+**What it does:**
+- Scans all approval files
+- Categorizes: Approved, Pending, Rejected, Orphaned
+- Generates formatted report
+- Suggests next actions
+
+**Intelligence:** Claude provides actionable insights and prioritization.
+
+---
+
+#### /update-dashboard
+**Location:** `.claude/skills/update-dashboard/SKILL.md`
+
+**Usage:**
+```bash
+/update-dashboard
+```
+
+**What it does:**
+- Collects metrics from all folders
+- Calculates statistics
+- Updates Dashboard.md with current status
+- Shows system health
+
+**Intelligence:** Claude determines what metrics matter and how to present them.
+
+---
+
+#### /linkedin-post
+**Location:** `.claude/skills/linkedin-post/SKILL.md`
+
+**Usage:**
+```bash
+/linkedin-post Posts_Queue/my_post.md
+```
+
+**What it does:**
+- Validates content and timing
+- Formats post professionally
+- Posts via LinkedIn API
+- Logs the post
+- Moves to posted/
+
+**Intelligence:** Claude applies professional judgment on timing, tone, and content quality.
 
 ---
 
@@ -288,15 +359,24 @@ Posts content to LinkedIn with validation.
 AI_Employee_Vault/
 ├── Dashboard.md              # System status dashboard
 ├── Company_Handbook.md       # Decision rules
-├── orchestrator_claude.py    # Claude Code orchestrator
-├── skills/                   # Agent Skills
-│   ├── plan_task/
-│   │   ├── SKILL.md         # Skill definition
-│   │   └── plan_task.py     # Implementation
-│   ├── execute_task/
-│   ├── check_approvals/
-│   ├── linkedin_post/
-│   └── update_dashboard/
+├── .claude/                  # Claude Code configuration
+│   └── skills/              # Agent Skills (Intelligence Modules)
+│       ├── plan-task/
+│       │   ├── SKILL.md            # Instructions for Claude
+│       │   └── scripts/
+│       │       └── gemini_helper.py  # Optional helper
+│       ├── execute-task/
+│       │   ├── SKILL.md
+│       │   └── scripts/gemini_helper.py
+│       ├── check-approvals/
+│       │   ├── SKILL.md
+│       │   └── scripts/check_approvals.py
+│       ├── update-dashboard/
+│       │   ├── SKILL.md
+│       │   └── scripts/update_dashboard.py
+│       └── linkedin-post/
+│           ├── SKILL.md
+│           └── scripts/linkedin_poster.py
 ├── watchers/                 # Perception layer
 │   ├── gmail_watcher.py
 │   └── linkedin_poster.py
@@ -321,18 +401,20 @@ AI_Employee_Vault/
 
 ## 🎓 Technical Highlights
 
-### Hybrid Architecture
-- **Claude Code:** Reasoning engine (orchestrator)
-- **Agent Skills:** Modular capabilities
-- **Gemini API:** Internal execution engine
-- **Result:** Best of both worlds - compliance + cost-effectiveness
+### Agent Skills Architecture
+- **Claude Code:** Reasoning engine that reads SKILL.md files
+- **Agent Skills:** Reusable intelligence modules (NOT Python scripts)
+- **SKILL.md Format:** YAML frontmatter + markdown instructions
+- **Optional Helpers:** Python scripts in `scripts/` subdirectories
+- **Result:** True intelligence - Claude learns and adapts
 
 ### Why This Approach?
-1. **Hackathon Compliant:** Uses Claude Code as required
-2. **Cost Effective:** Gemini API for heavy lifting
-3. **Truly Autonomous:** 24/7 operation via cron
-4. **Modular:** Easy to add new skills
-5. **Testable:** Skills work independently
+1. **Hackathon Compliant:** Agent Skills as required (not Python scripts)
+2. **Reusable Intelligence:** Skills teach Claude HOW to think
+3. **Flexible:** Claude adapts to context and makes decisions
+4. **Cost Effective:** Optional Gemini helpers for complex operations
+5. **Truly Autonomous:** 24/7 operation with intelligent reasoning
+6. **Modular:** Easy to add new skills by creating SKILL.md files
 
 ---
 
@@ -374,14 +456,16 @@ tail -f Memory/cron_logs/claude_executor.log
 
 ### What We Built
 A Silver Tier Personal AI Employee with:
-- Claude Code orchestrator as reasoning engine
-- 5 modular Agent Skills
-- Hybrid architecture (Claude Code + Gemini)
+- Claude Code as reasoning engine
+- 5 Agent Skills (reusable intelligence modules in `.claude/skills/`)
+- Proper SKILL.md format (NOT Python scripts)
 - Complete human-in-the-loop workflow
 - Production-ready automation
 
 ### Key Innovation
-**Hybrid Architecture:** Uses Claude Code for reasoning and coordination while leveraging Gemini API for cost-effective execution. This achieves true 24/7 autonomy while maintaining hackathon compliance.
+**Agent Skills Architecture:** Uses proper Agent Skills (SKILL.md files) that teach Claude Code HOW to think and reason, not just execute commands. Each skill is a reusable intelligence module that Claude applies flexibly across different contexts.
+
+**Hybrid Approach:** Skills can optionally use Gemini API as helpers (in `scripts/` subdirectories) for complex operations, achieving cost-effectiveness while maintaining hackathon compliance.
 
 ### Submission Materials
 - `hackathon_requirements/` - All tier requirements
