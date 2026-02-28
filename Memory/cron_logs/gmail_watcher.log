@@ -1869,3 +1869,27 @@ Traceback (most recent call last):
   File "/home/sk/projects/hacahthoon-0/personal-ai-employee/AI_Employee_Vault/venv/lib/python3.12/site-packages/google/oauth2/_client.py", line 69, in _handle_error_response
     raise exceptions.RefreshError(
 google.auth.exceptions.RefreshError: ('invalid_grant: Token has been expired or revoked.', {'error': 'invalid_grant', 'error_description': 'Token has been expired or revoked.'})
+[Sat Feb 28 15:58:01 PKT 2026] Gmail Watcher started
+============================================================
+📧 Gmail Watcher Starting
+============================================================
+Vault: /home/sk/projects/hacahthoon-0/personal-ai-employee/AI_Employee_Vault
+Check interval: 120 seconds
+Monitoring: All unread emails (testing mode)
+============================================================
+Traceback (most recent call last):
+  File "/home/sk/projects/hacahthoon-0/personal-ai-employee/AI_Employee_Vault/watchers/gmail_watcher.py", line 298, in <module>
+    watcher.run()
+  File "/home/sk/projects/hacahthoon-0/personal-ai-employee/AI_Employee_Vault/watchers/gmail_watcher.py", line 269, in run
+    if not self.authenticate():
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sk/projects/hacahthoon-0/personal-ai-employee/AI_Employee_Vault/watchers/gmail_watcher.py", line 69, in authenticate
+    creds.refresh(Request())
+  File "/home/sk/projects/hacahthoon-0/personal-ai-employee/AI_Employee_Vault/venv/lib/python3.12/site-packages/google/oauth2/credentials.py", line 412, in refresh
+    ) = reauth.refresh_grant(
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sk/projects/hacahthoon-0/personal-ai-employee/AI_Employee_Vault/venv/lib/python3.12/site-packages/google/oauth2/reauth.py", line 370, in refresh_grant
+    _client._handle_error_response(response_data, retryable_error)
+  File "/home/sk/projects/hacahthoon-0/personal-ai-employee/AI_Employee_Vault/venv/lib/python3.12/site-packages/google/oauth2/_client.py", line 69, in _handle_error_response
+    raise exceptions.RefreshError(
+google.auth.exceptions.RefreshError: ('invalid_grant: Token has been expired or revoked.', {'error': 'invalid_grant', 'error_description': 'Token has been expired or revoked.'})
