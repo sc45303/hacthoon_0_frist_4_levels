@@ -1,4 +1,4 @@
-# Personal AI Employee - Silver Tier
+# Personal AI Employee
 
 **Hackathon Submission:** Personal AI Employee Hackathon 0
 **Tier:** Silver (Functional Assistant)
